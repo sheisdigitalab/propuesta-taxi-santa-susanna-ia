@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taxi Santa Susanna · Asistente y avisos automáticos (ejemplo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#008F4C;      /* verde del logo: superficies, iconos, fondos grandes */
+  --green-txt:#00854A;  /* verde para texto pequeño sobre blanco (AA) */
+  --green-btn:#008244;  /* botones con texto blanco */
+  --deep:#002313;       /* verde muy oscuro: hero y textos principales */
+  --yellow:#FFD940;
+  --ink:#16221B;
+  --ink-2:#4B5A51;
+  --line:#DDE5E0;
+  --bg:#F4F7F5;
+  --wa-bg:#EFE7DD;
+  --wa-out:#D9FDD3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:Montserrat,system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+img,svg{display:block}
+
+/* ---------- ESCRITORIO: la web con el asistente ---------- */
+.desk-only{display:block}
+.phone-only{display:none}
+.top{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 56px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.logo{font-weight:800;font-size:20px;letter-spacing:.02em;color:var(--deep);display:flex;align-items:center;gap:10px}
+.logo b{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--green);color:#fff;font-size:15px}
+.logo span{color:var(--green-txt)}
+.nav{display:flex;gap:28px;font-size:15px;font-weight:600;color:var(--ink)}
+.nav a{color:inherit;text-decoration:none}
+.right{display:flex;align-items:center;gap:18px}
+.langs{font-size:14px;font-weight:600;color:var(--ink-2)}
+.langs strong{color:var(--green-txt)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 24px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer}
+.btn-green{background:var(--green-btn);color:#fff}
+.btn-yellow{background:var(--yellow);color:var(--deep)}
+
+.hero{background:linear-gradient(135deg,#00502B 0%,var(--deep) 75%);color:#fff;padding:72px 56px 84px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.eyebrow{display:inline-block;font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);margin-bottom:18px}
+.hero h1{font-size:50px;line-height:1.08;font-weight:800;letter-spacing:-.015em}
+.hero h1 em{font-style:normal;color:var(--yellow)}
+.hero p{font-size:18px;color:#D9E7DF;margin-top:20px;max-width:46ch}
+.hero .btns{display:flex;gap:14px;margin-top:30px}
+.ticks{display:flex;gap:22px;margin-top:28px;font-size:14px;color:#D9E7DF;flex-wrap:wrap}
+.ticks span::before{content:"✓ ";color:var(--yellow);font-weight:800}
+
+/* widget de chat */
+.chat{background:#fff;color:var(--ink);border-radius:20px;box-shadow:0 24px 48px -24px rgba(0,0,0,.5);overflow:hidden;max-width:470px;justify-self:end;width:100%}
+.chat-head{background:#00502B;color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px}
+.chat-head .av{width:40px;height:40px;border-radius:50%;background:#fff;color:var(--green-txt);display:grid;place-items:center;font-weight:800;font-size:15px}
+.chat-head strong{display:block;font-size:16px}
+.chat-head small{font-size:14px;color:#E6F4EC}
+.chat-head .dot{width:9px;height:9px;border-radius:50%;background:var(--yellow);display:inline-block;margin-right:6px}
+.chat-body{padding:20px;display:flex;flex-direction:column;gap:12px;background:var(--bg)}
+.msg{max-width:84%;padding:11px 15px;border-radius:16px;font-size:15px;line-height:1.5}
+.msg.in{background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.out{background:var(--green-btn);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.msg .who{display:block;font-size:14px;font-weight:700;color:var(--green-txt);margin-bottom:2px}
+.typing{align-self:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 16px;display:flex;gap:5px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#9AAAA1;animation:t 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes t{0%,60%,100%{opacity:.35}30%{opacity:1}}
+.chat-foot{display:flex;gap:10px;padding:14px 16px;border-top:1px solid var(--line);align-items:center}
+.chat-foot span{flex:1;font-size:14px;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:10px 16px}
+.chat-foot b{width:42px;height:42px;border-radius:50%;background:var(--green-btn);color:#fff;display:grid;place-items:center;font-size:18px}
+.chat-langs{font-size:14px;color:var(--ink-2);padding:0 20px 14px;background:var(--bg)}
+
+/* fases */
+.phase{padding:88px 56px;border-bottom:1px solid var(--line)}
+.phase:nth-of-type(even){background:var(--bg)}
+.ph-head{display:flex;align-items:baseline;gap:18px;margin-bottom:12px}
+.ph-num{font-size:14px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--green-btn);border-radius:999px;padding:6px 14px}
+.phase h2{font-size:36px;line-height:1.15;font-weight:800;color:var(--deep);letter-spacing:-.01em}
+.phase .lead{font-size:18px;color:var(--ink-2);max-width:62ch;margin-bottom:40px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 10px 24px -18px rgba(0,0,0,.22)}
+.card .ic{width:46px;height:46px;border-radius:12px;background:#E6F4EC;display:grid;place-items:center;font-size:22px;margin-bottom:16px}
+.card h3{font-size:18px;font-weight:700;color:var(--deep);margin-bottom:8px}
+.card p{font-size:15px;color:var(--ink-2)}
+.wa-mini{margin-top:16px;background:var(--wa-out);border-radius:12px;padding:10px 12px;font-size:14px;color:var(--ink);line-height:1.45}
+
+.flight{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+.flight .code{font-size:26px;font-weight:800;color:var(--deep)}
+.flight .route{font-size:15px;color:var(--ink-2)}
+.badge{display:inline-block;font-size:14px;font-weight:700;border-radius:999px;padding:5px 12px}
+.badge.late{background:#FFF3C4;color:#6B4E00}
+.badge.ok{background:#E6F4EC;color:#006435}
+.timeline{margin-top:20px;border-top:1px dashed var(--line);padding-top:16px;display:flex;flex-direction:column;gap:10px;font-size:15px}
+.timeline div{display:flex;gap:12px}
+.timeline time{font-weight:700;color:var(--deep);min-width:52px}
+.list{list-style:none;display:flex;flex-direction:column;gap:12px;font-size:16px}
+.list li{display:flex;gap:12px;align-items:flex-start}
+.list li::before{content:"";flex:0 0 22px;height:22px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/14px no-repeat;margin-top:2px}
+
+.panel-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px}
+.panel-row:last-child{border-bottom:0}
+.panel-row strong{color:var(--deep)}
+.call{display:flex;flex-direction:column;gap:10px;font-size:15px}
+.call .line{padding:10px 14px;border-radius:12px;background:var(--bg)}
+.call .line.bot{background:#E6F4EC}
+.call .lbl{font-size:14px;font-weight:700;color:var(--green-txt);display:block}
+.wave{display:flex;gap:4px;align-items:center;height:26px;margin-bottom:6px}
+.wave i{width:4px;border-radius:2px;background:var(--green);animation:w 1s ease-in-out infinite}
+.wave i:nth-child(odd){animation-delay:.3s}
+@keyframes w{0%,100%{height:6px}50%{height:24px}}
+
+.foot{background:var(--deep);color:#C9DBD1;padding:48px 56px;font-size:14px;display:flex;justify-content:space-between;gap:24px}
+.foot strong{color:#fff}
+
+/* ---------- MÓVIL: conversación de WhatsApp ---------- */
+@media (max-width:700px){
+  .desk-only{display:none}
+  .phone-only{display:block}
+  body{background:var(--wa-bg)}
+}
+.wa-top{position:sticky;top:0;z-index:5;background:#075E54;color:#fff;display:flex;align-items:center;gap:12px;padding:14px 16px}
+.wa-top .av{width:42px;height:42px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-weight:800;font-size:15px;border:2px solid #fff}
+.wa-top strong{font-size:16px;display:flex;align-items:center;gap:6px}
+.wa-top strong i{width:16px;height:16px;border-radius:50%;background:#25D366;display:inline-grid;place-items:center;font-style:normal;font-size:11px;color:#fff}
+.wa-top small{font-size:14px;color:#D7EFE9}
+.wa-note{background:#FFF3C4;color:#5C4400;font-size:14px;text-align:center;padding:8px 14px;font-weight:600}
+.wa{padding:14px 12px 96px;display:flex;flex-direction:column;gap:8px;background:var(--wa-bg)}
+.day{align-self:center;background:#E1F2FB;color:#33505E;font-size:14px;font-weight:600;border-radius:8px;padding:5px 12px;margin:10px 0 4px}
+.b{max-width:86%;padding:8px 11px 6px;border-radius:10px;font-size:15px;line-height:1.45;box-shadow:0 1px 1px rgba(0,0,0,.08);position:relative}
+.b.in{background:#fff;align-self:flex-start;border-top-left-radius:2px}
+.b.out{background:var(--wa-out);align-self:flex-end;border-top-right-radius:2px}
+.b .t{display:block;text-align:right;font-size:14px;color:#54656F;margin-top:2px}
+.b.auto{border-left:4px solid var(--green)}
+.b .tag{display:block;font-size:14px;font-weight:700;color:var(--green-txt);margin-bottom:2px}
+.b .cta{display:block;margin-top:8px;border-top:1px solid #E3E8E4;padding-top:8px;text-align:center;font-weight:700;color:#026C9C;font-size:15px}
+.b .stars{color:#E9A800;letter-spacing:2px}
+.wa-input{position:fixed;left:0;right:0;bottom:0;display:flex;gap:8px;padding:10px;background:var(--wa-bg)}
+.wa-input span{flex:1;background:#fff;border-radius:999px;padding:12px 16px;font-size:15px;color:#54656F}
+.wa-input b{width:46px;height:46px;border-radius:50%;background:#00A884;color:#fff;display:grid;place-items:center;font-size:18px}
+.legend{margin:18px 4px 0;font-size:14px;color:#4B5A51;text-align:center}
+
+@media (prefers-reduced-motion:reduce){.typing i,.wave i{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- ================= ESCRITORIO ================= -->
+<div class="desk-only">
+  <header class="top">
+    <div class="logo"><b>TS</b>TAXI <span>Santa Susanna</span></div>
+    <nav class="nav"><a href="#">Inicio</a><a href="#">Transfers</a><a href="#">Tarifas</a><a href="#">Hoteles</a><a href="#">Empresas</a><a href="#">Ayuda</a></nav>
+    <div class="right"><span class="langs"><strong>ES</strong> | CA | EN</span><a class="btn btn-green" href="#">Reservar</a></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Atención 24 h · en tu idioma</span>
+      <h1>Pregunta, reserva y recibe tu confirmación <em>al momento</em>.</h1>
+      <p>El asistente de Taxi Santa Susanna responde dudas y precios a cualquier hora, en la web y por WhatsApp, y te avisa de todo lo importante de tu viaje.</p>
+      <div class="btns"><a class="btn btn-yellow" href="#">Reservar mi transfer</a><a class="btn" style="color:#fff;border:1px solid #fff" href="#">Escribir por WhatsApp</a></div>
+      <div class="ticks"><span>Precio fijo</span><span>Confirmación por WhatsApp</span><span>Seguimiento de tu vuelo</span></div>
+    </div>
+
+    <div class="chat" aria-label="Ejemplo de conversación con el asistente">
+      <div class="chat-head">
+        <div class="av">TS</div>
+        <div><strong>Asistente Taxi Santa Susanna</strong><small><span class="dot"></span>Responde al momento</small></div>
+      </div>
+      <div class="chat-body">
+        <div class="msg out">Hi! How much is a taxi from Hotel Riviera to Barcelona airport?</div>
+        <div class="msg in"><span class="who">Asistente</span>Hi! It's a fixed price of €142 (daytime rate). Would you like me to book it for you? I can send the confirmation by WhatsApp.</div>
+        <div class="msg out">Yes please, tomorrow at 10:00.</div>
+        <div class="msg in"><span class="who">Asistente</span>Great! I just need your name and your flight number, and I'll send you the secure payment link.</div>
+        <div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+      <div class="chat-langs">Responde en español, català, English, français, deutsch…</div>
+      <div class="chat-foot"><span>Escribe tu pregunta…</span><b aria-hidden="true">➤</b></div>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="ph-head"><span class="ph-num">Fase 1</span></div>
+    <h2>Un WhatsApp de empresa que atiende y reparte</h2>
+    <p class="lead">Un solo número para toda la empresa. El asistente contesta al momento, en el idioma del cliente y con tus tarifas, deja la reserva hecha y el viaje llega a los conductores sin llamadas de por medio.</p>
+    <div class="grid4">
+      <div class="card"><div class="ic">💬</div><h3>Atiende y reserva</h3><p>Precios, horarios y dudas a cualquier hora. Toma los datos y confirma la reserva. Si no sabe algo, pasa la conversación a una persona.</p><div class="wa-mini">Del Hotel Riviera al aeropuerto: 142 € de día. ¿Te lo reservo?</div></div>
+      <div class="card"><div class="ic">✅</div><h3>Confirmación y recordatorio</h3><p>Al reservar y el día antes, con opción de responder si algo cambia.</p><div class="wa-mini">Hoy a las 10:00 te recogemos en el Hotel Riviera.</div></div>
+      <div class="card"><div class="ic">🚕</div><h3>Reparto a los conductores</h3><p>El viaje llega por WhatsApp. Lo asigna la centralita o se lo queda el primero que lo coge, y él mismo avisa de que va de camino.</p><div class="wa-mini">Nuevo viaje · Mañana 10:00 · Riviera → Aeropuerto <b>[Lo cojo]</b></div></div>
+      <div class="card"><div class="ic">⭐</div><h3>Aviso de llegada y reseña</h3><p>El cliente sabe qué coche le recoge y cuándo. Al terminar, se le pide su opinión en Google.</p><div class="wa-mini">Te recoge Jordi, coche nº 3 · Llega en 8 min</div></div>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="ph-head"><span class="ph-num">Fase 2</span></div>
+    <h2>La web y el aeropuerto, en el mismo sistema</h2>
+    <p class="lead">El mismo asistente se pone en la web, las reservas del formulario siguen el mismo camino que las de WhatsApp y las recogidas en el aeropuerto se ajustan solas al vuelo.</p>
+    <div class="grid2">
+      <div class="card">
+        <ul class="list">
+          <li>Chat en la web que responde dudas y precios a cualquier hora.</li>
+          <li>Las reservas de la web reciben su confirmación por WhatsApp y van al reparto de conductores.</li>
+          <li>Enlace de pago para pagar la reserva por adelantado.</li>
+          <li>Seguimiento del vuelo del cliente en las recogidas en el aeropuerto.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="flight">
+          <div class="ic" style="margin:0">✈️</div>
+          <div><div class="code">VY 1234</div><div class="route">Londres → Barcelona-El Prat · recogida de Marc P.</div></div>
+          <span class="badge late">+40 min</span>
+        </div>
+        <div class="timeline">
+          <div><time>09:10</time><span>El vuelo anuncia retraso.</span></div>
+          <div><time>09:11</time><span>La recogida pasa de 10:00 a 10:40 y se avisa al conductor.</span></div>
+          <div><time>09:11</time><span>El cliente recibe: "Hemos visto que tu vuelo llega más tarde, te esperamos igualmente".</span></div>
+          <div><time>10:38</time><span class="badge ok">Conductor en la salida de llegadas</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="ph-head"><span class="ph-num">Fase 3</span></div>
+    <h2>Sin centralita: el teléfono también lo coge el asistente</h2>
+    <p class="lead">Para trabajar todo por internet. El asistente de voz atiende las llamadas las 24 horas, toma la reserva y la manda al mismo sistema. Y los hoteles y empresas piden sus taxis sin llamar.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Asistente de voz</h3>
+        <div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="call">
+          <div class="line"><span class="lbl">Cliente · 23:40</span>Necesito un taxi a la estación de Blanes dentro de media hora.</div>
+          <div class="line bot"><span class="lbl">Asistente</span>Perfecto. ¿Desde qué dirección te recogemos? Te enviaré la confirmación por WhatsApp.</div>
+          <div class="line"><span class="lbl">Al colgar</span>La reserva va al reparto de conductores, igual que las de WhatsApp y la web.</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Hoteles y empresas</h3>
+        <p style="margin-bottom:10px">Ejemplo: recepción del Hotel Riviera</p>
+        <div class="panel-row"><span><strong>Hab. 214</strong> · Aeropuerto BCN</span><span>Hoy 18:00</span><span class="badge ok">Confirmado</span></div>
+        <div class="panel-row"><span><strong>Hab. 108</strong> · Estación Barcelona Sants</span><span>Mañana 07:30</span><span class="badge ok">Confirmado</span></div>
+        <div class="panel-row"><span><strong>Hab. 331</strong> · La Roca Village</span><span>Mañana 11:00</span><span class="badge late">Pendiente</span></div>
+        <p style="margin-top:14px">Resumen mensual de servicios y facturas enviado automáticamente.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div><strong>TAXI Santa Susanna</strong> · Atención 24 h · +34 937 67 85 71</div>
+    <div>Ejemplo ilustrativo. El precio mostrado sale de las tarifas actuales de la web.</div>
+  </footer>
+</div>
+
+<!-- ================= MÓVIL: WHATSAPP ================= -->
+<div class="phone-only">
+  <div class="wa-top">
+    <div class="av">TS</div>
+    <div><strong>Taxi Santa Susanna <i>✓</i></strong><small>Cuenta de empresa</small></div>
+  </div>
+  <div class="wa-note">Ejemplo de conversación por WhatsApp</div>
+
+  <div class="wa">
+    <span class="day">Hoy</span>
+    <div class="b out">¡Hola! ¿Cuánto cuesta un taxi del Hotel Riviera al aeropuerto de Barcelona mañana a las 10:00?<span class="t">18:02 ✓✓</span></div>
+    <div class="b in">¡Hola! 👋 Del Hotel Riviera al aeropuerto de Barcelona-El Prat el precio es fijo: <b>142 €</b> en horario de día. ¿Quieres que te lo reserve para mañana a las 10:00?<span class="t">18:02</span></div>
+    <div class="b out">Sí, perfecto 👍<span class="t">18:03 ✓✓</span></div>
+    <div class="b in">Genial. ¿A nombre de quién hago la reserva? Si me pasas tu número de vuelo, lo tengo en cuenta por si hay cambios.<span class="t">18:03</span></div>
+    <div class="b out">Laura Martín, vuelo VY 1235<span class="t">18:05 ✓✓</span></div>
+    <div class="b in auto"><span class="tag">✅ Reserva confirmada</span>Mañana a las 10:00<br>Hotel Riviera → Aeropuerto de Barcelona<br>Precio: 142 € · Código TS-4821<span class="t">18:06</span></div>
+
+    <span class="day">Mañana</span>
+    <div class="b in auto"><span class="tag">⏰ Recordatorio</span>Hoy a las 10:00 te recogemos en el Hotel Riviera. Si cambia algo, responde a este mensaje.<span class="t">07:00</span></div>
+    <div class="b in auto"><span class="tag">🚕 Tu conductor está en camino</span>Te recoge Jordi, coche nº 3<br>Toyota blanco · 1234 ABC<br>Llega en 8 minutos.<span class="t">09:52</span></div>
+    <div class="b in auto"><span class="tag">📍 Ya estamos aquí</span>Tu conductor te espera en la puerta del hotel.<span class="t">09:59</span></div>
+    <div class="b out">¡Bajo ahora! 🙌<span class="t">09:59 ✓✓</span></div>
+
+    <span class="day">Después del viaje</span>
+    <div class="b in auto"><span class="tag">Gracias por viajar con nosotros</span>¿Nos dejas tu opinión en Google? Nos ayuda mucho.<br><span class="stars">★★★★★</span><span class="cta">Dejar mi reseña</span><span class="t">11:15</span></div>
+
+    <p class="legend">Los mensajes con barra verde se envían solos. El resto los contesta el asistente al momento.</p>
+  </div>
+  <div class="wa-input"><span>Mensaje</span><b aria-hidden="true">➤</b></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
