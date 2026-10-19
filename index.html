@@ -86,6 +86,29 @@ h1,h2,h3{font-family:Figtree,Figtree,system-ui,sans-serif;font-weight:400;line-h
 .stage-pin{position:sticky;top:0;min-height:100vh;display:flex;align-items:center}
 .stage-pin .stage{padding-block:24px;width:100%}
 @media(max-width:980px){.stage-wrap{height:auto}.stage-pin{position:static;min-height:0;display:block}.stage-pin .stage{padding-block:48px 64px}}
+
+.fases{border-top:1px solid var(--line);padding-block:80px}
+.fases-head{max-width:60ch;margin-bottom:48px}
+.fases-head h2{font-size:clamp(2rem,1.4rem + 2vw,3rem);font-weight:300;letter-spacing:-.01em;margin-top:6px}
+.fases-head p{color:var(--ink-2);margin-top:14px;font-size:1.05rem}
+.fase{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center;padding-block:40px;border-top:1px solid var(--line)}
+.fase .n{font-size:.875rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.fase h3{font-size:clamp(1.5rem,1.2rem + 1vw,2rem);font-weight:400;margin:8px 0 14px}
+.fase p{color:var(--ink-2)}
+.fase ul{margin:16px 0 0;padding-left:20px;color:var(--ink-2)}
+.fase li{margin-bottom:6px}
+.demo{background:#F4F7F5;border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:.95rem}
+.demo .who{font-size:.875rem;font-weight:600;color:var(--gold);letter-spacing:.04em}
+.bub{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px;line-height:1.5}
+.bub.wa{background:#D9FDD3;border-color:#C3EBBC}
+.bub .btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.bub .btns span{border:1px solid #008244;color:#006435;border-radius:999px;padding:4px 14px;font-size:.875rem;font-weight:600;background:#fff}
+.bub .btns span.on{background:#008244;color:#fff}
+.arrow{align-self:center;color:var(--gold);font-size:1.2rem;line-height:1}
+.precio{background:var(--ink);color:#fff;border-radius:18px;padding:clamp(28px,4vw,48px);margin-top:40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:32px;align-items:center}
+.precio h3{font-size:clamp(1.5rem,1.2rem + 1vw,2rem);font-weight:300}
+.precio p{color:#C9D6CF}
+@media(max-width:860px){.fase,.precio{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -111,7 +134,7 @@ h1,h2,h3{font-family:Figtree,Figtree,system-ui,sans-serif;font-weight:400;line-h
         <div class="bar"><i></i><i></i><i></i><span>taxisantasusanna.com</span></div>
         <div class="view" id="v"><iframe id="f" src="web/index.html?v=1" title="Versión escritorio"></iframe></div>
       </div>
-      <p class="hint">Tu web con el asistente · baja con el scroll para ver cada fase</p>
+      <p class="hint">Así vería tu web el cliente · baja con el scroll para recorrerla</p>
     </div>
     <div>
       <div class="phone"><div class="scr"><iframe src="web/index.html?v=1" title="Versión móvil"></iframe></div></div>
@@ -122,12 +145,83 @@ h1,h2,h3{font-family:Figtree,Figtree,system-ui,sans-serif;font-weight:400;line-h
   </div></div>
   <p class="proto"><span>Aviso</span>Esto es un prototipo aproximado que deberá ser trabajado durante la fase de diseño.</p>
 
-  <div class="pts">
-    <div><span class="n">I</span><h2>Fase 1 · WhatsApp que atiende y reparte</h2><p>Un solo número de empresa. El asistente responde precios y dudas a cualquier hora, toma la reserva, manda confirmación y recordatorio, reparte el viaje a los conductores y avisa al cliente de qué coche le recoge. Al final, pide la reseña en Google.</p></div>
-    <div><span class="n">II</span><h2>Fase 2 · Web y aeropuerto</h2><p>El mismo asistente en la web, las reservas del formulario en el mismo sistema que las de WhatsApp, pago online y seguimiento de vuelos para que las recogidas en el aeropuerto se ajusten solas.</p></div>
-    <div><span class="n">III</span><h2>Fase 3 · Sin centralita</h2><p>Un asistente de voz que coge el teléfono las 24 horas y manda la reserva al mismo sistema. Los hoteles y empresas piden sus taxis sin llamar y reciben su resumen mensual.</p></div>
-    <div><span class="n">IV</span><h2>Presupuesto a medida</h2><p>Cada fase se presupuesta por separado y se puede empezar solo por la primera. Aparte van los costes mensuales de uso (WhatsApp oficial de Meta, la IA y los servicios externos), que dependen de tu volumen de mensajes y llamadas.</p></div>
-  </div>
+  <section class="fases">
+    <div class="fases-head">
+      <p class="label">Cómo funciona por dentro</p>
+      <h2>Tres fases, para empezar por lo que más se nota</h2>
+      <p>Lo que has visto arriba es lo que vive tu cliente. Aquí tienes lo que pasa por detrás en cada fase, y cómo os quita trabajo a ti y a tus conductores.</p>
+    </div>
+
+    <div class="fase">
+      <div>
+        <span class="n">Fase 1</span>
+        <h3>Un WhatsApp de empresa que atiende y reparte</h3>
+        <p>Un solo número para toda la empresa. El asistente contesta al momento, en el idioma del cliente y con tus tarifas fijas, y deja la reserva hecha.</p>
+        <ul>
+          <li>Confirmación y recordatorio automáticos.</li>
+          <li>El viaje llega por WhatsApp a los conductores: lo asigna la centralita o se lo queda el primero que lo coge.</li>
+          <li>El conductor pulsa "Voy de camino" y el cliente sabe qué coche le recoge.</li>
+          <li>Al terminar, se le pide la reseña en Google.</li>
+        </ul>
+      </div>
+      <div class="demo" aria-label="Ejemplo del reparto de un viaje">
+        <span class="who">WhatsApp de los conductores</span>
+        <div class="bub wa">Nuevo viaje · Mañana 10:00<br>Hotel Riviera → Aeropuerto de Barcelona · 142 €<div class="btns"><span class="on">Lo cojo</span><span>No puedo</span></div></div>
+        <span class="arrow">↓</span>
+        <div class="bub">Jordi (coche nº 3) se queda el viaje. A los demás les llega: "Este viaje ya está asignado".</div>
+        <span class="arrow">↓</span>
+        <span class="who">WhatsApp del cliente</span>
+        <div class="bub wa">Te recoge Jordi, coche nº 3 · Toyota blanco · Llega en 8 min</div>
+      </div>
+    </div>
+
+    <div class="fase">
+      <div>
+        <span class="n">Fase 2</span>
+        <h3>La web y el aeropuerto, en el mismo sistema</h3>
+        <p>El mismo asistente se pone en la web, y las reservas del formulario siguen el mismo camino que las de WhatsApp.</p>
+        <ul>
+          <li>Chat en la web que responde dudas y precios.</li>
+          <li>Las reservas de la web reciben su confirmación por WhatsApp y van al reparto de conductores.</li>
+          <li>Pago online por adelantado.</li>
+          <li>Seguimiento de vuelos: la recogida se ajusta sola si el vuelo se retrasa.</li>
+        </ul>
+      </div>
+      <div class="demo" aria-label="Ejemplo de seguimiento de vuelo">
+        <span class="who">Vuelo VY 1234 · recogida a las 10:00</span>
+        <div class="bub">09:10 · El vuelo anuncia 40 minutos de retraso.</div>
+        <span class="arrow">↓</span>
+        <div class="bub">09:11 · La recogida pasa a las 10:40 y el conductor recibe el cambio en su WhatsApp.</div>
+        <span class="arrow">↓</span>
+        <div class="bub wa">Al cliente: "Hemos visto que tu vuelo llega más tarde. Tu conductor te esperará en llegadas a las 10:40".</div>
+      </div>
+    </div>
+
+    <div class="fase">
+      <div>
+        <span class="n">Fase 3</span>
+        <h3>Sin centralita: el teléfono también lo coge el asistente</h3>
+        <p>Para trabajar todo por internet. El asistente de voz atiende las llamadas las 24 horas, toma la reserva y la manda al mismo reparto que las de WhatsApp y la web.</p>
+        <ul>
+          <li>Atiende de noche, en temporada alta y en varios idiomas.</li>
+          <li>Si el cliente lo pide, pasa la llamada a una persona.</li>
+          <li>Los hoteles y empresas piden sus taxis sin llamar y reciben su resumen mensual.</li>
+        </ul>
+      </div>
+      <div class="demo" aria-label="Ejemplo de llamada atendida por el asistente">
+        <span class="who">Llamada · 23:40</span>
+        <div class="bub">Cliente: "Necesito un taxi a la estación de Blanes dentro de media hora".</div>
+        <div class="bub wa">Asistente: "Perfecto. ¿Desde qué dirección te recogemos? Te envío la confirmación por WhatsApp".</div>
+        <span class="arrow">↓</span>
+        <div class="bub">Al colgar, el viaje llega a los conductores como cualquier otra reserva.</div>
+      </div>
+    </div>
+
+    <div class="precio">
+      <h3>Presupuesto a medida</h3>
+      <p>Cada fase se presupuesta por separado y se puede empezar solo por la primera. Aparte van los costes mensuales de uso (WhatsApp oficial de Meta, la IA y los servicios externos), que dependen de tu volumen de mensajes y llamadas.</p>
+    </div>
+  </section>
 </div>
 
 <section class="close">
